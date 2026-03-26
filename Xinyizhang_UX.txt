@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>情绪监测应用用户体验研究 · 张鑫艺</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FDFCFA;--ink:#1A1714;--ink2:#4A4743;--ink3:#8A8885;
+  --coral:#D94F2B;--coral-light:#FAEAE4;--coral-mid:#F0BBA9;
+  --plum:#6C5F9E;--plum-light:#EEEDF8;
+  --teal:#1A7A6A;--teal-light:#E1F5F0;
+  --amber:#C07A1A;--amber-light:#FDF3E0;
+  --blue:#185FA5;--blue-light:#E6F1FB;
+  --border:#E8E4DE;--gap:88px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+/* 优化字体系统 - 中文字体优先 */
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Microsoft YaHei','PingFang SC','Hiragino Sans GB','Heiti SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:15px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased
+}
+
+.page{max-width:940px;margin:0 auto;padding:0 32px 120px}
+
+/* 滚动动画系统 */
+section{
+  opacity:0;
+  transform:translateY(40px);
+  transition:opacity 0.6s ease-out,transform 0.6s ease-out
+}
+section.visible{
+  opacity:1;
+  transform:translateY(0)
+}
+.hero{
+  opacity:1;
+  transform:translateY(0)
+}
+
+/* 最小字体优化 */
+.hero-eyebrow{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--coral);margin-bottom:18px}
+.hero-eyebrow::before{content:'';display:block;width:20px;height:1.5px;background:var(--coral)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(253,252,250,0.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px}
+.nav-inner{max-width:940px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-logo{font-size:12px;font-weight:600;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;font-family:'Microsoft YaHei',sans-serif}
+.nav-logo em{font-style:normal;color:var(--coral)}
+.nav-links{display:flex;gap:22px;list-style:none}
+.nav-links a{font-size:12px;color:var(--ink3);text-decoration:none;transition:color .2s;font-family:'Microsoft YaHei',sans-serif}
+.nav-links a:hover{color:var(--coral)}
+
+/* HERO */
+.hero{padding:72px 0 64px;border-bottom:1px solid var(--border)}
+.hero-grid{display:grid;grid-template-columns:1fr 360px;gap:48px;align-items:center}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(30px,4vw,48px);line-height:1.12;color:var(--ink);margin-bottom:14px}
+.hero-tagline{font-family:'DM Serif Display',serif;font-style:italic;font-size:15px;color:var(--ink3);margin-bottom:20px;padding-left:12px;border-left:3px solid var(--coral-mid);line-height:1.65}
+.hero-subtitle{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:28px;font-family:'Microsoft YaHei',sans-serif}
+.hero-meta{display:flex;flex-wrap:wrap;gap:8px}
+.tag{display:inline-flex;align-items:center;font-size:12px;font-weight:500;padding:4px 12px;border-radius:100px;border:1px solid var(--border);color:var(--ink2);background:white;font-family:'Microsoft YaHei',sans-serif}
+.tag.coral{background:var(--coral-light);border-color:var(--coral-mid);color:var(--coral)}
+.tag.plum{background:var(--plum-light);border-color:#C5C0E8;color:var(--plum)}
+.tag.teal{background:var(--teal-light);border-color:#A0D9CE;color:var(--teal)}
+.hero-visuals{display:flex;flex-direction:column;align-items:center;gap:14px}
+
+/* SECTION */
+section{padding-top:var(--gap)}
+.section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;display:flex;align-items:center;gap:10px;font-family:'Microsoft YaHei',sans-serif}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.section-label span{white-space:nowrap}
+h2{font-family:'DM Serif Display',serif;font-size:clamp(24px,3vw,33px);line-height:1.2;margin-bottom:12px;color:var(--ink)}
+.section-desc{font-size:14px;color:var(--ink2);max-width:640px;margin-bottom:28px;line-height:1.8;font-family:'Microsoft YaHei',sans-serif}
+
+/* PROBLEM */
+.problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.problem-card{border:1px solid var(--border);border-radius:14px;padding:22px;background:white;position:relative;overflow:hidden}
+.problem-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.p1::before{background:var(--coral)}.p2::before{background:var(--plum)}
+.problem-num{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;font-family:'Microsoft YaHei',sans-serif}
+.p1 .problem-num{color:var(--coral)}.p2 .problem-num{color:var(--plum)}
+.problem-card h3{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:9px;line-height:1.4;font-family:'Microsoft YaHei',sans-serif}
+.problem-card p{font-size:13px;color:var(--ink2);line-height:1.7;font-family:'Microsoft YaHei',sans-serif}
+.quote-block{margin-top:11px;padding:8px 12px;border-left:3px solid var(--border);border-radius:0 6px 6px 0;background:var(--cream);font-size:12px;color:var(--ink2);font-style:italic;line-height:1.6;font-family:'Microsoft YaHei',sans-serif}
+
+/* METHOD TABLE - fixed column widths */
+.method-table-wrap{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:24px}
+.method-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.method-table thead tr{background:#F4F1EC}
+.method-table th{padding:11px 14px;font-size:11px;font-weight:600;color:var(--ink2);text-align:left;border-bottom:1px solid var(--border);letter-spacing:.04em;vertical-align:top;font-family:'Microsoft YaHei',sans-serif}
+.method-table td{padding:13px 14px;font-size:13px;color:var(--ink2);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6;word-break:break-all;overflow-wrap:break-word;font-family:'Microsoft YaHei',sans-serif}
+.method-table tr:last-child td{border-bottom:none}
+.source-name{font-weight:600;color:var(--ink);font-size:13px;white-space:nowrap;font-family:'Microsoft YaHei',sans-serif}
+.source-sub{font-size:11px;color:var(--ink3);margin-top:2px;font-family:'Microsoft YaHei',sans-serif}
+.type-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;margin-top:4px;white-space:nowrap;font-family:'Microsoft YaHei',sans-serif}
+.type-badge.exploratory{background:var(--plum-light);color:var(--plum)}
+.type-badge.analytical{background:var(--amber-light);color:var(--amber)}
+.type-badge.validating{background:var(--coral-light);color:var(--coral)}
+
+/* PHASE */
+.phase-steps{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:22px}
+.phase-step{padding:22px 18px;border-right:1px solid var(--border)}
+.phase-step:last-child{border-right:none}
+.phase-num{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:7px;font-family:'Microsoft YaHei',sans-serif}
+.phase-step h3{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;line-height:1.4;font-family:'Microsoft YaHei',sans-serif}
+.phase-step p{font-size:12px;color:var(--ink2);line-height:1.6;font-family:'Microsoft YaHei',sans-serif}
+.ph1{border-top:3px solid var(--plum)}.ph2{border-top:3px solid var(--teal)}.ph3{border-top:3px solid var(--coral)}
+.phase-output{margin-top:8px;font-size:11px;font-weight:600;font-family:'Microsoft YaHei',sans-serif}
+.ph1 .phase-output{color:var(--plum)}.ph2 .phase-output{color:var(--teal)}.ph3 .phase-output{color:var(--coral)}
+
+/* COMPETITIVE */
+.comp-section-label{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin:0 0 10px;padding:5px 0;border-bottom:1px solid var(--border);font-family:'Microsoft YaHei',sans-serif}
+.comp-table-wrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px}
+.comp-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.comp-table thead tr{background:#F4F1EC}
+.comp-table th{padding:10px 12px;font-size:11px;font-weight:600;color:var(--ink2);text-align:left;border-bottom:1px solid var(--border);vertical-align:top;word-break:break-all;font-family:'Microsoft YaHei',sans-serif}
+.comp-table td{padding:11px 12px;font-size:12px;color:var(--ink2);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55;word-break:break-all;overflow-wrap:break-word;font-family:'Microsoft YaHei',sans-serif}
+.comp-table tr:last-child td{border-bottom:none}
+.app-name{font-weight:600;color:var(--ink);font-size:12px;font-family:'Microsoft YaHei',sans-serif}
+.app-sub{font-size:10px;color:var(--ink3);margin-top:1px;font-family:'Microsoft YaHei',sans-serif}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:3px;vertical-align:middle}
+.dot.full{background:var(--teal)}.dot.half{background:var(--amber)}.dot.none{background:#CCC}
+.itag{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;margin-top:3px;display:block;width:fit-content;font-family:'Microsoft YaHei',sans-serif}
+.itag.red{background:var(--coral-light);color:var(--coral)}
+.itag.green{background:var(--teal-light);color:var(--teal)}
+.itag.yellow{background:var(--amber-light);color:var(--amber)}
+.xiaomi-row td{background:#FFF8F5}
+.opp-box{border-radius:12px;padding:16px 20px;margin-bottom:24px}
+.opp-box.coral{background:var(--coral-light);border:1px solid var(--coral-mid)}
+
+/* FINDINGS */
+.findings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.finding-card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px}
+.finding-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:9px}
+.finding-card h4{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px;font-family:'Microsoft YaHei',sans-serif}
+.finding-card p{font-size:12px;color:var(--ink2);line-height:1.65;font-family:'Microsoft YaHei',sans-serif}
+.quote-pill{display:inline-block;margin-top:8px;padding:6px 10px;background:var(--cream);border:1px solid var(--border);border-radius:7px;font-size:11px;color:var(--ink2);font-style:italic;line-height:1.55;font-family:'Microsoft YaHei',sans-serif}
+
+/* PERSONAS */
+.personas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.persona-card{border:1px solid var(--border);border-radius:12px;background:white;overflow:hidden}
+.persona-header{padding:14px 14px 11px;border-bottom:1px solid var(--border)}
+.persona-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:8px}
+.persona-name{font-size:13px;font-weight:600;color:var(--ink);font-family:'Microsoft YaHei',sans-serif}
+.persona-role{font-size:11px;color:var(--ink3);margin-top:1px;font-family:'Microsoft YaHei',sans-serif}
+.persona-body{padding:12px 14px}
+.persona-goal{font-size:12px;color:var(--ink2);margin-bottom:8px;line-height:1.6;font-family:'Microsoft YaHei',sans-serif}
+.persona-pain{font-size:11px;line-height:1.6;padding:6px 8px;border-radius:6px;font-family:'Microsoft YaHei',sans-serif}
+.pc1 .persona-avatar{background:var(--plum-light)}.pc2 .persona-avatar{background:var(--teal-light)}.pc3 .persona-avatar{background:var(--coral-light)}
+.pc1 .persona-pain{background:var(--plum-light);color:#3A2E6E}
+.pc2 .persona-pain{background:var(--teal-light);color:#0F5040}
+.pc3 .persona-pain{background:var(--coral-light);color:#7A2B18}
+
+/* INSIGHTS */
+.insights-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.insight-card{border-radius:14px;padding:24px}
+.i1{background:var(--coral-light);border:1px solid var(--coral-mid)}
+.i2{background:var(--plum-light);border:1px solid #C5C0E8}
+.insight-num{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:9px;font-family:'Microsoft YaHei',sans-serif}
+.i1 .insight-num{color:var(--coral)}.i2 .insight-num{color:var(--plum)}
+.insight-card h3{font-family:'DM Serif Display',serif;font-size:17px;line-height:1.3;margin-bottom:9px}
+.i1 h3{color:#7A2B18}.i2 h3{color:#3A2E6E}
+.insight-card p{font-size:13px;line-height:1.7;font-family:'Microsoft YaHei',sans-serif}
+.i1 p{color:#8A4030}.i2 p{color:#504080}
+.hmw{margin-top:12px;padding:9px 11px;border-radius:7px;font-size:12px;font-weight:500;font-style:italic;line-height:1.6;font-family:'Microsoft YaHei',sans-serif}
+.i1 .hmw{background:rgba(217,79,43,.1);color:#7A2B18}
+.i2 .hmw{background:rgba(108,95,158,.1);color:#3A2E6E}
+
+/* SOLUTION SECTION */
+/* Three signal cards with embedded visuals */
+.signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.signal-card{border:1px solid var(--border);border-radius:14px;background:white;overflow:hidden}
+.signal-card-header{padding:16px 16px 12px;border-bottom:1px solid var(--border)}
+.signal-badge{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;font-family:'Microsoft YaHei',sans-serif}
+.sc1 .signal-badge{color:var(--coral)}.sc2 .signal-badge{color:var(--plum)}.sc3 .signal-badge{color:var(--teal)}
+.signal-card h4{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:4px;font-family:'Microsoft YaHei',sans-serif}
+.signal-card p{font-size:12px;color:var(--ink2);line-height:1.6;font-family:'Microsoft YaHei',sans-serif}
+.signal-visual{padding:14px 16px;background:var(--cream)}
+
+/* EMOJI SLIDER */
+.slider-demo{background:white;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+.slider-demo-label{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;font-family:'Microsoft YaHei',sans-serif}
+.watch-prompt{background:#111B26;border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px}
+.watch-prompt-icon{width:26px;height:26px;background:#D94F2B;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:11px}
+.watch-prompt-text{font-size:12px;color:white;line-height:1.55;font-family:'Microsoft YaHei',sans-serif}
+.watch-prompt-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;font-family:'Microsoft YaHei',sans-serif}
+.mood-slider-input{width:100%;-webkit-appearance:none;appearance:none;height:5px;border-radius:100px;background:linear-gradient(90deg,#6C5F9E 0%,#C07A1A 50%,#1A7A6A 100%);outline:none;cursor:pointer;margin-bottom:8px}
+.mood-slider-input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:white;border:2px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.1);cursor:pointer}
+.emoji-row{display:flex;justify-content:space-between;margin-bottom:8px}
+.emoji-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 8px;border-radius:8px;transition:background .18s;min-width:48px}
+.emoji-item.active{background:var(--cream)}
+.emoji-face{font-size:20px;line-height:1;transition:transform .12s}
+.emoji-item.active .emoji-face{transform:scale(1.18)}
+.emoji-word{font-size:10px;color:var(--ink3);font-weight:500;transition:color .18s;font-family:'Microsoft YaHei',sans-serif}
+.emoji-item.active .emoji-word{color:var(--ink);font-weight:600}
+.mood-result{text-align:center;font-size:12px;color:var(--ink2);padding:8px;background:var(--cream);border-radius:7px;font-family:'Microsoft YaHei',sans-serif}
+.mood-result span{font-weight:600}
+
+/* INPUT COMPARE */
+.input-compare{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.input-option{border:1px solid var(--border);border-radius:10px;padding:14px}
+.bad{border-color:#F0BBA9;background:#FEF5F2}
+.ok{border-color:#D4C9F0;background:#F5F3FD}
+.good{border-color:#A0D9CE;background:#F0FAF7}
+.input-opt-lbl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-family:'Microsoft YaHei',sans-serif}
+.bad .input-opt-lbl{color:var(--coral)}.ok .input-opt-lbl{color:var(--plum)}.good .input-opt-lbl{color:var(--teal)}
+.input-option h5{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:4px;font-family:'Microsoft YaHei',sans-serif}
+.input-option p{font-size:11px;color:var(--ink2);line-height:1.6;font-family:'Microsoft YaHei',sans-serif}
+.mock-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:100px;border:1px solid var(--border);margin:2px 1px 0 0;background:white;color:var(--ink2);font-family:'Microsoft YaHei',sans-serif}
+.mini-slider{width:100%;height:3px;background:linear-gradient(90deg,var(--plum-light) 0%,var(--plum) 65%,var(--plum-light) 100%);border-radius:100px;margin:7px 0;position:relative}
+.mini-thumb{position:absolute;left:62%;top:-5px;width:14px;height:14px;background:white;border:2px solid var(--plum);border-radius:50%}
+
+/* LOOP DIAGRAM */
+.loop-diagram-wrap{background:white;border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:18px}
+.loop-top-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);text-align:center;margin-bottom:20px;font-family:'Microsoft YaHei',sans-serif}
+.loop-triggers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+.trigger-card{border-radius:10px;padding:14px;text-align:center}
+.tc1{background:var(--coral-light);border:1px solid var(--coral-mid)}
+.tc2{background:var(--plum-light);border:1px solid #C5C0E8}
+.tc3{background:var(--teal-light);border:1px solid var(--border)}.trigger-icon{font-size:16px;margin-bottom:6px;display:block}
+.trigger-card h4{font-size:12px;font-weight:600;margin-bottom:3px;font-family:'Microsoft YaHei',sans-serif}
+.tc1 h4{color:var(--coral)}.tc2 h4{color:var(--plum)}.tc3 h4{color:var(--teal)}
+.trigger-card p{font-size:11px;line-height:1.55;color:var(--ink2);font-family:'Microsoft YaHei',sans-serif}
+.loop-arrows{display:flex;justify-content:space-around;padding:4px 0 2px}
+.arrow-down{display:flex;flex-direction:column;align-items:center;gap:1px;color:var(--ink3);font-size:10px;font-family:'Microsoft YaHei',sans-serif}
+.arrow-down::after{content:'↓';font-size:14px;display:block}
+.loop-center{background:var(--ink);border-radius:12px;padding:14px 20px;text-align:center;margin:4px 0 11px}
+.loop-center h3{font-family:'DM Serif Display',serif;font-size:17px;color:white;margin-bottom:2px}
+.loop-center p{font-size:11px;color:rgba(255,255,255,.48);font-family:'Microsoft YaHei',sans-serif}
+.loop-outputs{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.output-card{border:1px solid var(--border);border-radius:9px;padding:12px 14px;background:var(--cream)}
+.output-card h5{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;font-family:'Microsoft YaHei',sans-serif}
+.output-card p{font-size:11px;color:var(--ink2);line-height:1.55;font-family:'Microsoft YaHei',sans-serif}
+
+/* PRODUCT RECS */
+.recs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.rec-card{background:white;border:1px solid var(--border);border-radius:12px;padding:18px}
+.rec-num{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;font-family:'Microsoft YaHei',sans-serif}
+.rec-card:nth-child(1) .rec-num{color:var(--coral)}
+.rec-card:nth-child(2) .rec-num{color:var(--plum)}
+.rec-card:nth-child(3) .rec-num{color:var(--teal)}
+.rec-card:nth-child(4) .rec-num{color:var(--amber)}
+.rec-card h4{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;font-family:'Microsoft YaHei',sans-serif}
+.rec-card p{font-size:12px;color:var(--ink2);line-height:1.65;font-family:'Microsoft YaHei',sans-serif}
+.ab-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.ab-metric{background:var(--cream);border-radius:8px;padding:10px 8px;text-align:center;border:1px solid var(--border)}
+.ab-metric-n{font-family:'DM Serif Display',serif;font-size:17px;color:var(--coral)}
+.ab-metric-l{font-size:11px;color:var(--ink3);line-height:1.35;margin-top:2px;font-family:'Microsoft YaHei',sans-serif}
+
+/* ECOSYSTEM */
+.ecosystem-wrap{background:var(--ink);border-radius:14px;padding:26px;margin-bottom:16px;position:relative;overflow:hidden}
+.ecosystem-wrap::before{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:var(--coral);opacity:.06;border-radius:50%}
+.ecosystem-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px;font-family:'Microsoft YaHei',sans-serif}
+.ecosystem-title{font-family:'DM Serif Display',serif;font-size:20px;color:white;margin-bottom:8px;line-height:1.3}
+.ecosystem-desc{font-size:13px;color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:18px;font-family:'Microsoft YaHei',sans-serif}
+
+/* LIMITS */
+.limit-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.limit-card{border:1px solid var(--border);border-radius:10px;padding:14px;background:white}
+.limit-card h5{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:4px;font-family:'Microsoft YaHei',sans-serif}
+.limit-card p{font-size:12px;color:var(--ink2);line-height:1.6;font-family:'Microsoft YaHei',sans-serif}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
+.stat-card{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 12px;text-align:center}
+.stat-num{font-family:'DM Serif Display',serif;font-size:30px;color:var(--coral);margin-bottom:2px}
+.stat-lbl{font-size:12px;color:var(--ink2);line-height:1.4;font-family:'Microsoft YaHei',sans-serif}
+
+/* FOOTER */
+footer{margin-top:var(--gap);padding:28px 0;border-top:1px solid var(--border)}
+.footer-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.footer-tagline{font-family:'DM Serif Display',serif;font-style:italic;font-size:16px;color:var(--ink2)}
+.footer-name{font-size:13px;color:var(--ink3);font-family:'Microsoft YaHei',sans-serif}
+.footer-name strong{color:var(--coral);font-weight:600}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.footer-bottom p{font-size:12px;color:var(--ink3);font-family:'Microsoft YaHei',sans-serif}
+
+@media(max-width:700px){
+  .page{padding:0 16px 80px}
+  .hero-grid,.problem-grid,.findings-grid,.insights-wrap,.signal-grid,.loop-triggers,.loop-outputs,.personas-grid,.phase-steps,.recs-grid,.limit-grid,.input-compare{grid-template-columns:1fr}
+  .stats-row,.ab-metrics{grid-template-columns:1fr 1fr}
+  h2{font-size:24px}
+  .hero-visuals{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo"><em>张鑫艺</em> · UX Research</span>
+    <ul class="nav-links">
+      <li><a href="#research">研究设计</a></li>
+      <li><a href="#competitive">竞品分析</a></li>
+      <li><a href="#findings">用户洞察</a></li>
+      <li><a href="#solution">优化方案</a></li>
+      <li><a href="#roadmap">后续计划</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow">UX Research Case Study</div>
+      <h1>情绪监测应用<br>用户体验研究</h1>
+      <p class="hero-tagline">当你清晰地感知到情绪，<br>焦虑就已经少了一半。</p>
+      <p class="hero-subtitle">以智能手表生态下的情绪监测为切入点，通过个人体验日志、桌面研究、竞品拆解与深度访谈，识别情绪记录类产品的体验断层，提出针对可穿戴端的系统性优化策略。</p>
+      <div class="hero-meta">
+        <span class="tag coral">定性 + 定量研究</span>
+        <span class="tag plum">5人深度访谈</span>
+        <span class="tag teal">竞品横向拆解</span>
+        <span class="tag">自我民族志</span>
+        <span class="tag">概念验证项目</span>
+      </div>
+    </div>
+    <div class="hero-visuals">
+      <!-- Watch SVG -->
+      <svg viewBox="0 0 180 250" width="155" xmlns="http://www.w3.org/2000/svg">
+        <rect x="62" y="0" width="56" height="42" rx="12" fill="#2A2825"/>
+        <rect x="62" y="208" width="56" height="42" rx="12" fill="#2A2825"/>
+        <rect x="14" y="38" width="152" height="174" rx="36" fill="#1A1714"/>
+        <rect x="24" y="48" width="132" height="154" rx="28" fill="#0E1824"/>
+        <rect x="28" y="52" width="124" height="146" rx="24" fill="#111D2B"/>
+        <text x="90" y="85" text-anchor="middle" fill="white" font-family="sans-serif" font-size="24" font-weight="600" letter-spacing="-1">10:24</text>
+        <text x="90" y="101" text-anchor="middle" fill="rgba(255,255,255,0.32)" font-family="sans-serif" font-size="9">周三 · 3月</text>
+        <line x1="44" y1="110" x2="136" y2="110" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>
+        <text x="90" y="126" text-anchor="middle" fill="rgba(255,255,255,0.42)" font-family="sans-serif" font-size="10">压力指数</text>
+        <path d="M 46 168 A 44 44 0 0 1 134 168" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="9" stroke-linecap="round"/>
+        <path d="M 46 168 A 44 44 0 0 1 116 117" fill="none" stroke="#D94F2B" stroke-width="9" stroke-linecap="round"/>
+        <text x="90" y="162" text-anchor="middle" fill="white" font-family="sans-serif" font-size="28" font-weight="600">72</text>
+        <text x="90" y="176" text-anchor="middle" fill="#D94F2B" font-family="sans-serif" font-size="10" font-weight="600">偏高</text>
+        <rect x="42" y="185" width="96" height="19" rx="6" fill="rgba(255,255,255,0.05)"/>
+        <text x="52" y="198" fill="rgba(255,255,255,0.38)" font-family="sans-serif" font-size="9">HRV</text>
+        <text x="128" y="198" text-anchor="end" fill="rgba(255,255,255,0.65)" font-family="sans-serif" font-size="10" font-weight="500">34 ms ↓</text>
+        <rect x="166" y="100" width="9" height="26" rx="4" fill="#2A2825"/>
+        <circle cx="134" cy="52" r="5" fill="#D94F2B"/>
+      </svg>
+      <!-- Word Cloud SVG -->
+      <svg viewBox="0 0 300 165" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <text x="150" y="13" text-anchor="middle" fill="#8A8885" font-family="sans-serif" font-size="9" font-weight="600" letter-spacing=".08em">情绪词汇频率分布</text>
+        <text x="100" y="56" text-anchor="middle" fill="#D94F2B" font-family="sans-serif" font-size="26" font-weight="600" opacity=".92">焦虑</text>
+        <text x="210" y="80" text-anchor="middle" fill="#C07A1A" font-family="sans-serif" font-size="22" font-weight="600" opacity=".85">压力</text>
+        <text x="46" y="90" text-anchor="middle" fill="#6C5F9E" font-family="sans-serif" font-size="19" font-weight="500" opacity=".8">不安</text>
+        <text x="178" y="45" text-anchor="middle" fill="#D94F2B" font-family="sans-serif" font-size="14" opacity=".7">紧张</text>
+        <text x="262" y="52" text-anchor="middle" fill="#6C5F9E" font-family="sans-serif" font-size="13" opacity=".62">迷茫</text>
+        <text x="140" y="108" text-anchor="middle" fill="#8A8885" font-family="sans-serif" font-size="16" opacity=".7">疲惫</text>
+        <text x="240" y="115" text-anchor="middle" fill="#1A7A6A" font-family="sans-serif" font-size="14" opacity=".72">平静</text>
+        <text x="26" y="44" text-anchor="middle" fill="#8A8885" font-family="sans-serif" font-size="11" opacity=".52">空洞</text>
+        <text x="24" y="128" text-anchor="middle" fill="#6C5F9E" font-family="sans-serif" font-size="12" opacity=".58">压抑</text>
+        <text x="282" y="88" text-anchor="middle" fill="#8A8885" font-family="sans-serif" font-size="11" opacity=".55">烦躁</text>
+        <text x="75" y="145" text-anchor="middle" fill="#1A7A6A" font-family="sans-serif" font-size="12" opacity=".62">放松</text>
+        <text x="178" y="148" text-anchor="middle" fill="#1A7A6A" font-family="sans-serif" font-size="11" opacity=".55">愉悦</text>
+        <text x="260" y="145" text-anchor="middle" fill="#1A7A6A" font-family="sans-serif" font-size="10" opacity=".48">充实</text>
+        <text x="292" y="30" text-anchor="middle" fill="#D94F2B" font-family="sans-serif" font-size="10" opacity=".45">恐惧</text>
+        <text x="14" y="158" text-anchor="middle" fill="#C07A1A" font-family="sans-serif" font-size="10" opacity=".42">期待</text>
+        <text x="116" y="160" text-anchor="middle" fill="#8A8885" font-family="sans-serif" font-size="10" opacity=".38">难过</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- ══ 01 ══ -->
+<section id="overview">
+  <div class="section-label"><span>01 &nbsp;问题定义</span></div>
+  <h2>我们在解决什么问题？</h2>
+  <p class="section-desc">情绪类可穿戴产品流失率远高于预期——用户并非不想记录情绪，而是现有产品无法准确"接住"他们想表达的感受。</p>
+  <div class="problem-grid">
+    <div class="problem-card p1">
+      <div class="problem-num">痛点 01 · 系统侧</div>
+      <h3>自动识别不准，<br>破坏用户信任</h3>
+      <p>系统推断的情绪与真实感受频繁不符，引发认知失调，用户停止主动校正数据。</p>
+      <div class="quote-block">"它说我有压力，但我当时只是走路快了点。"——访谈 P3</div>
+    </div>
+    <div class="problem-card p2">
+      <div class="problem-num">痛点 02 · 语义侧</div>
+      <h3>标签颗粒度不足，<br>表达精度受限</h3>
+      <p>语义重叠（"焦虑"vs"不安"）+ 颗粒度粗糙，导致用户在相似词间反复犹豫，记录意愿下降。</p>
+      <div class="quote-block">"想记那种平静但有点空的感觉，但选项里没有。"——访谈 P1</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 02 ══ -->
+<section id="research">
+  <div class="section-label"><span>02 &nbsp;研究设计</span></div>
+  <h2>如何系统性地找到答案？</h2>
+  <p class="section-desc">采用"探索→描述→分析→验证"四阶段混合研究路径，以个人体验为起点，小样本访谈为收口。</p>
+
+  <div class="method-table-wrap">
+    <table class="method-table">
+      <colgroup>
+        <col style="width:17%">
+        <col style="width:26%">
+        <col style="width:37%">
+        <col style="width:20%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>信息来源</th>
+          <th>具体方法</th>
+          <th>输出物</th>
+          <th>类型</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="source-name">个人体验</div>
+            <div class="source-sub">自我民族志</div>
+          </td>
+          <td>体验日志：记录情绪波动触发点、记录意愿变化与不同场景下的输入成本</td>
+          <td>关键场景清单<br>任务链路草图<br>初始假设</td>
+          <td><span class="type-badge exploratory">探索性</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="source-name">桌面研究</div>
+            <div class="source-sub">论文 + 产品文档</div>
+          </td>
+          <td>情绪粒度理论（Emotion Granularity）、PAD 情感模型、HRV 与压力关联研究；应用商店评论挖掘</td>
+          <td>理论框架<br>竞品能力边界初步描述</td>
+          <td><span class="type-badge exploratory">探索性</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="source-name">竞品拆解</div>
+            <div class="source-sub">描述性分析</div>
+          </td>
+          <td>小米 / Apple / vivo/ 华为 / Garmin 等产品，围绕"触发—记录—回看—坚持"四维度展开分析</td>
+          <td>竞品能力矩阵<br>机会空间地图</td>
+          <td><span class="type-badge analytical">分析性</span></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="source-name">小样本访谈</div>
+            <div class="source-sub">n=5，便利取样</div>
+          </td>
+          <td>半结构化深度访谈（25–35 min/人）；主题编码 + 亲和图 + 概念漏斗归纳共性行为</td>
+          <td>假设验证报告<br>语义校准<br>用户画像</td>
+          <td><span class="type-badge validating">验证性</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="phase-steps">
+    <div class="phase-step ph1">
+      <div class="phase-num">第 1 阶段</div>
+      <h3>个人体验日志</h3>
+      <p>记录情绪波动触发点、记录意愿变化和不同场景下的输入成本，发现初始假设。</p>
+      <div class="phase-output">→ 关键场景清单</div>
+    </div>
+    <div class="phase-step ph2">
+      <div class="phase-num">第 2 阶段</div>
+      <h3>桌面研究与竞品拆解</h3>
+      <p>分析 HRV 与压力识别理论，拆解小米 / Apple Watch / vivo /华为 / Garmin 的情绪功能边界。</p>
+      <div class="phase-output">→ 竞品矩阵 + 假设修正</div>
+    </div>
+    <div class="phase-step ph3">
+      <div class="phase-num">第 3 阶段</div>
+      <h3>小样本访谈验证</h3>
+      <p>验证关键假设、补足"为什么"，通过亲和图与概念漏斗校准标签语义与真实场景的对应关系。</p>
+      <div class="phase-output">→ 洞察报告 + 用户画像</div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num">5</div><div class="stat-lbl">深度访谈<br>受访者</div></div>
+    <div class="stat-card"><div class="stat-num">6+</div><div class="stat-lbl">竞品深度<br>拆解</div></div>
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-lbl">研究阶段<br>完整闭环</div></div>
+  </div>
+</section>
+
+<!-- ══ 03 ══ -->
+<section id="competitive">
+  <div class="section-label"><span>03 &nbsp;竞品拆解</span></div>
+  <h2>市场现状与机会空间</h2>
+  <p class="section-desc">产品分两类：<strong>手机端 App</strong>（主动手动记录为主）和 <strong>Watch 端</strong>（生理信号自动识别为主），分别以"触发—记录—回看—坚持"四维度展开分析。</p>
+
+  <div class="comp-section-label">📱 &nbsp;手机端 App — 用户主动记录为主</div>
+  <div class="comp-table-wrap">
+    <table class="comp-table">
+      <colgroup><col style="width:18%"><col style="width:16%"><col style="width:18%"><col style="width:16%"><col style="width:18%"><col style="width:14%"></colgroup>
+      <thead>
+        <tr><th>产品</th><th>触发机制</th><th>标签颗粒度</th><th>记录方式</th><th>回看 / 反馈</th><th>评估</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="app-name">竞品A</div><div class="app-sub">情绪日记 App</div></td>
+          <td>定时提醒<span class="itag yellow">被动触发</span></td>
+          <td><span class="dot full"></span>5情绪级+活动<span class="itag green">较好</span></td>
+          <td>图标+日记文字</td>
+          <td>月历+情绪折线图</td>
+          <td><span class="itag green">手机端标杆</span></td>
+        </tr>
+        <tr>
+          <td><div class="app-name">竞品B</div><div class="app-sub">健康追踪平台</div></td>
+          <td>定时+症状触发</td>
+          <td><span class="dot full"></span>分层细粒度<span class="itag green">行业最优</span></td>
+          <td>多维滑块+日志</td>
+          <td>趋势分析+关联报告</td>
+          <td><span class="itag green">综合最强</span></td>
+        </tr>
+        <tr>
+          <td><div class="app-name">竞品C</div><div class="app-sub"> 健康 App</div></td>
+          <td>每日手动<span class="itag red">无自动触发</span></td>
+          <td><span class="dot half"></span>5情绪维度<span class="itag red">仅当日总结</span></td>
+          <td>滑轮选择+强度</td>
+          <td>当日摘要，无波动曲线<span class="itag red">无实时追踪</span></td>
+          <td><span class="itag yellow">体验浅</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="comp-section-label">⌚ &nbsp;Watch 端 — 生理信号自动识别为主</div>
+  <div class="comp-table-wrap">
+    <table class="comp-table">
+      <colgroup><col style="width:18%"><col style="width:18%"><col style="width:22%"><col style="width:14%"><col style="width:14%"><col style="width:14%"></colgroup>
+      <thead>
+        <tr><th>产品</th><th>生理信号</th><th>情绪/压力识别</th><th>主观输入</th><th>推断可解释性</th><th>评估</th></tr>
+      </thead>
+      <tbody>
+        <tr class="xiaomi-row">
+          <td><div class="app-name"> 竞品D</div><div class="app-sub">多生态联动</div></td>
+          <td>HRV+心率+血氧</td>
+          <td>HRV全天压力评分（0–100），异常推送提醒<span class="itag red">无情绪语义标签</span></td>
+          <td><span class="dot none"></span>无<span class="itag red">核心缺口</span></td>
+          <td><span class="dot none"></span>仅显示数值<span class="itag red">黑箱</span></td>
+          <td><span class="itag red">情绪维度空白</span></td>
+        </tr>
+        <tr>
+          <td><div class="app-name">竞品E</div><div class="app-sub">情绪健康助手</div></td>
+          <td>HRV+心率+皮肤电</td>
+          <td>检测异常时主动提醒，首发"情绪健康助手"<span class="itag green">行业领先</span></td>
+          <td><span class="dot half"></span>情绪确认推送<span class="itag yellow">颗粒度有限</span></td>
+          <td><span class="dot half"></span>有异常说明</td>
+          <td><span class="itag green">Watch端标杆</span></td>
+        </tr>
+        <tr>
+          <td><div class="app-name">竞品F</div><div class="app-sub">系统自带</div></td>
+          <td>HRV+心率</td>
+          <td>正念提醒，不做情绪推断<span class="itag yellow">克制策略</span></td>
+          <td><span class="dot half"></span>正念计时</td>
+          <td><span class="dot half"></span>不推断即不需解释</td>
+          <td><span class="itag yellow">刻意回避</span></td>
+        </tr>
+        <tr>
+          <td><div class="app-name">竞品G</div><div class="app-sub">Body Battery</div></td>
+          <td>HRV（全天连续）</td>
+          <td>Body Battery能量值+4级压力<span class="itag green">HRV算法成熟</span></td>
+          <td><span class="dot half"></span>活动标记</td>
+          <td><span class="dot half"></span>压力来源部分说明</td>
+          <td><span class="itag yellow">生理侧强</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:12px;font-size:11px;color:var(--ink3);line-height:1.6;font-style:italic;font-family:'Microsoft YaHei',sans-serif">
+    注：为保护商业信息，表格中产品名称已做匿名化处理，实际竞品包括小米、vivo、Apple watch、华为、Garmin等主流品牌。
+  </div>
+
+
+  <div class="opp-box coral">
+    <p style="font-size:13px;color:#7A2B18;line-height:1.8;font-family:'Microsoft YaHei',sans-serif">
+      <strong>🎯 核心洞察：</strong>现有的硬件监测普遍面临<strong>"情绪语义缺失"</strong>。尽管 <strong>HRV 压力算法</strong>已趋于成熟，但单一的数值反馈（如"压力值 72"）缺乏<strong>场景解释力</strong>，且忽视了用户的<strong>主观表达</strong>。
+    </p>
+  </div>
+
+  <div class="opp-box" style="background:var(--amber-light);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-top:16px">
+    <p style="font-size:13px;color:#7A4B0D;line-height:1.8;font-family:'Microsoft YaHei',sans-serif">
+      <strong>💡 设计介入机会：</strong>结合<strong>Watch（连续被动监测）</strong>+ <strong>Phone App（细粒度主观定义）</strong>两者优势。利用腕部信号捕捉情绪瞬间，结合情绪标签完成语义对齐，构建主客观统一的情绪监测闭环。
+    </p>
+  </div>
+</section>
+
+<!-- ══ 04 ══ -->
+<section id="findings">
+  <div class="section-label"><span>04 &nbsp;用户研究发现</span></div>
+  <h2>用户真正在说什么？</h2>
+  <p class="section-desc">5人半结构化访谈（25–35分钟/人），经主题编码与亲和图归类，提炼以下核心发现。</p>
+  <div class="findings-grid">
+    <div class="finding-card">
+      <div class="finding-icon" style="background:var(--coral-light)">🎯</div>
+      <h4>触发：外部刺激 > 内部意愿</h4>
+      <p>用户主动记录的动机弱，等感受消退才回填时准确性大幅下降。</p>
+      <div class="quote-pill">"等我想起来要记，那个感觉已经过去了。"</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon" style="background:var(--plum-light)">🏷️</div>
+      <h4>标签：相似词间的高认知负担</h4>
+      <p>在近义词间平均停留 3–5 秒犹豫，最终选"最接近但不够准确"的词——这是妥协，不是满足。</p>
+      <div class="quote-pill">"我知道我的感受，但找不到恰到好处的形容词来描述。"</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon" style="background:var(--amber-light)">🔄</div>
+      <h4>坚持：记了，然后呢？</h4>
+      <p>当产品无法回答"我记了这些，然后呢？"时，记录动机在首月内快速衰减，缺少后续引导的情绪调节等。</p>
+      <div class="quote-pill">"好像在喂数据给软件，不知道意义在哪里。"</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 05 ══ -->
+<section id="personas">
+  <div class="section-label"><span>05 &nbsp;用户画像</span></div>
+  <h2>谁在使用这类产品？</h2>
+  <p class="section-desc">基于访谈数据归纳出三类典型用户，代表不同情绪管理动机与使用模式。</p>
+  <div class="personas-grid">
+    <div class="persona-card pc1">
+      <div class="persona-header">
+        <div class="persona-avatar">🔍</div>
+        <div class="persona-name">小雅 · 自我探索型</div>
+        <div class="persona-role">研究生，23岁 / 高压学业环境</div>
+      </div>
+      <div class="persona-body">
+        <div class="persona-goal">希望通过记录了解情绪规律，辅助焦虑管理与自我认知。</div>
+        <div style="font-size:10px;color:var(--ink3);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-family:'Microsoft YaHei',sans-serif">核心痛点</div>
+        <div class="persona-pain">标签选不准，记完感觉"没记对"。个体情绪波动大但找不到对应的形容词。</div>
+      </div>
+    </div>
+    <div class="persona-card pc2">
+      <div class="persona-header">
+        <div class="persona-avatar">📈</div>
+        <div class="persona-name">老李 · 数据驱动型</div>
+        <div class="persona-role">互联网从业，28岁 / 量化生活爱好者</div>
+      </div>
+      <div class="persona-body">
+        <div class="persona-goal">已记录步数/睡眠/体重，希望把情绪纳入健康数据体系。</div>
+        <div style="font-size:10px;color:var(--ink3);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-family:'Microsoft YaHei',sans-serif">核心痛点</div>
+        <div class="persona-pain">系统自动推断和主观真实感受不符时，数据将失去意义。进而失去对背后黑箱逻辑的信任。</div>
+      </div>
+    </div>
+    <div class="persona-card pc3">
+      <div class="persona-header">
+        <div class="persona-avatar">🌿</div>
+        <div class="persona-name">阿琳 · 压力管理型</div>
+        <div class="persona-role">职场新人，25岁 / 轻度焦虑倾向</div>
+      </div>
+      <div class="persona-body">
+        <div class="persona-goal">不想记太多，希望手表感知"快到临界点"，及时提醒休息。</div>
+        <div style="font-size:10px;color:var(--ink3);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;font-family:'Microsoft YaHei',sans-serif">核心痛点</div>
+        <div class="persona-pain">多次在放松时收到"你有压力"的通知，但是没有引导进一步该如何调节情绪。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 06 ══ -->
+<section id="insights">
+  <div class="section-label"><span>06 &nbsp;核心洞察</span></div>
+  <h2>从发现到设计机会</h2>
+  <div class="insights-wrap">
+    <div class="insight-card i1">
+      <div class="insight-num">洞察 01 · 语义层</div>
+      <h3>情绪表达是一种需要工具的认知任务</h3>
+      <p>用户并非"不知道自己的感受"，而是缺乏足够精细的词汇工具。现有标签停留在日常口语层面，造成系统性表达失真。</p>
+      <div class="hmw">💡 HMW：如何在不增加认知负担的前提下，提供更高颗粒度的情绪词汇支架？</div>
+    </div>
+    <div class="insight-card i2">
+      <div class="insight-num">洞察 02 · 信任层</div>
+      <h3>"可解释性"是生理推断被接受的前提</h3>
+      <p>用户对自动识别的排斥，本质是对"黑箱逻辑"不信任。当系统清晰展示推断依据时，接受度与校正意愿同步提升。</p>
+      <div class="hmw">💡 HMW：如何设计可解释的推断机制，让用户从"被判断者"变为"协作校准者"？</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 07 ══ -->
+<section id="solution">
+  <div class="section-label"><span>07 &nbsp;产品优化方案</span></div>
+  <h2>情绪记录闭环机制设计</h2>
+  <p class="section-desc">核心设计挑战：手表端屏幕极小，如何在"最小化输入成本"的前提下，保留足够的表达精度并让用户信任推断依据？</p>
+
+  <!-- Three Signal Cards with embedded visuals -->
+  <div class="signal-grid">
+
+    <!-- Card 1: 生理触发 with HRV chart -->
+    <div class="signal-card sc1">
+      <div class="signal-card-header">
+        <div class="signal-badge">信号源 01 · 生理自动触发</div>
+        <h4>HRV 异常检测</h4>
+        <p>心率波动突变时，自动发起确认请求，附带可视化数据说明</p>
+      </div>
+      <div class="signal-visual">
+        <!-- HRV mini chart SVG -->
+        <svg viewBox="0 0 220 80" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="11" fill="#8A8885" font-family="sans-serif" font-size="9" font-weight="600" letter-spacing=".06em">HRV 波动曲线（过去 60 分钟）</text>
+          <!-- Grid lines -->
+          <line x1="0" y1="25" x2="220" y2="25" stroke="#E8E4DE" stroke-width="0.5"/>
+          <line x1="0" y1="45" x2="220" y2="45" stroke="#E8E4DE" stroke-width="0.5"/>
+          <line x1="0" y1="65" x2="220" y2="65" stroke="#E8E4DE" stroke-width="0.5"/>
+          <!-- Y labels -->
+          <text x="0" y="28" fill="#8A8885" font-family="sans-serif" font-size="8">60</text>
+          <text x="0" y="48" fill="#8A8885" font-family="sans-serif" font-size="8">40</text>
+          <text x="0" y="68" fill="#8A8885" font-family="sans-serif" font-size="8">20</text>
+          <!-- Normal HRV line (green, smooth) -->
+          <polyline points="16,42 36,38 56,44 76,40 96,43 116,39 136,41" fill="none" stroke="#1A7A6A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Spike area -->
+          <polyline points="136,41 150,30 160,22 168,28 176,35 188,52 200,60 214,63" fill="none" stroke="#D94F2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Alert zone fill -->
+          <polygon points="136,65 136,41 150,30 160,22 168,28 176,35 188,52 200,60 214,63 214,65" fill="#D94F2B" opacity=".08"/>
+          <!-- Divider line -->
+          <line x1="136" y1="18" x2="136" y2="68" stroke="#D94F2B" stroke-width="1" stroke-dasharray="2 2"/>
+          <!-- Alert label -->
+          <rect x="138" y="18" width="46" height="14" rx="4" fill="#D94F2B" opacity=".12"/>
+          <text x="161" y="28" text-anchor="middle" fill="#D94F2B" font-family="sans-serif" font-size="8" font-weight="600">异常波动 +28%</text>
+          <!-- Time labels -->
+          <text x="16" y="76" fill="#8A8885" font-family="sans-serif" font-size="8">-60min</text>
+          <text x="110" y="76" text-anchor="middle" fill="#8A8885" font-family="sans-serif" font-size="8">-30min</text>
+          <text x="210" y="76" text-anchor="end" fill="#8A8885" font-family="sans-serif" font-size="8">现在</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Card 2: 用户主观反馈 with watch mockup -->
+    <div class="signal-card sc2">
+      <div class="signal-card-header">
+        <div class="signal-badge">信号源 02 · 用户主观反馈</div>
+        <h4>渐进披露标签体系</h4>
+        <p>基础3类快速确认，按需展开30+细粒度标签，强度滑块辅助表达</p>
+      </div>
+      <div class="signal-visual" style="display:flex;justify-content:center;align-items:center;">
+        <!-- Watch UI mockup SVG -->
+        <svg viewBox="0 0 130 150" width="130" xmlns="http://www.w3.org/2000/svg">
+          <!-- Watch strap top/bottom -->
+          <rect x="42" y="0" width="46" height="22" rx="8" fill="#1E1C1A"/>
+          <rect x="42" y="128" width="46" height="22" rx="8" fill="#1E1C1A"/>
+          <!-- Watch body -->
+          <rect x="6" y="18" width="118" height="114" rx="24" fill="#1A1714"/>
+          <!-- Screen -->
+          <rect x="14" y="26" width="102" height="98" rx="18" fill="#0D1520"/>
+          <!-- Screen content: emotion prompt -->
+          <rect x="18" y="30" width="94" height="90" rx="14" fill="#111D2B"/>
+          <!-- Top pill: HRV alert -->
+          <rect x="26" y="36" width="78" height="14" rx="7" fill="rgba(217,79,43,0.2)"/>
+          <text x="65" y="46" text-anchor="middle" fill="#D94F2B" font-family="sans-serif" font-size="7.5" font-weight="600">心率波动异常 +28%</text>
+          <!-- Question -->
+          <text x="65" y="62" text-anchor="middle" fill="white" font-family="sans-serif" font-size="8.5" font-weight="500">你现在感觉如何？</text>
+          <!-- Three emoji buttons -->
+          <rect x="22" y="68" width="26" height="26" rx="8" fill="rgba(108,95,158,0.25)"/>
+          <text x="35" y="85" text-anchor="middle" font-family="sans-serif" font-size="14">😔</text>
+          <rect x="52" y="68" width="26" height="26" rx="8" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+          <text x="65" y="85" text-anchor="middle" font-family="sans-serif" font-size="14">😐</text>
+          <rect x="82" y="68" width="26" height="26" rx="8" fill="rgba(26,122,106,0.25)"/>
+          <text x="95" y="85" text-anchor="middle" font-family="sans-serif" font-size="14">😊</text>
+          <!-- Labels under emojis -->
+          <text x="35" y="100" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="sans-serif" font-size="6.5">很低落</text>
+          <text x="65" y="100" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-family="sans-serif" font-size="6.5">还好</text>
+          <text x="95" y="100" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-family="sans-serif" font-size="6.5">很好</text>
+          <!-- More detail button -->
+          <rect x="30" y="105" width="70" height="13" rx="6" fill="rgba(255,255,255,0.08)"/>
+          <text x="65" y="114" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="sans-serif" font-size="7">更详细描述 →</text>
+          <!-- Crown -->
+          <rect x="124" y="68" width="7" height="20" rx="3" fill="#1E1C1A"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Card 3: 场景识别 with compact map -->
+    <div class="signal-card sc3">
+      <div class="signal-card-header">
+        <div class="signal-badge">信号源 03 · 场景识别标注</div>
+        <h4>位置感知情境关联</h4>
+        <p>基于位置/日历/活动行为自动标注情绪情境，提升数据可解释性</p>
+      </div>
+      <div class="signal-visual">
+        <!-- Compact Location Map -->
+        <svg viewBox="0 0 220 140" width="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- BG -->
+          <rect width="220" height="140" rx="8" fill="#EDE9E3"/>
+          <!-- Roads -->
+          <rect x="0" y="52" width="220" height="9" fill="white" opacity=".65"/>
+          <rect x="0" y="98" width="220" height="9" fill="white" opacity=".65"/>
+          <rect x="58" y="0" width="9" height="140" fill="white" opacity=".65"/>
+          <rect x="122" y="0" width="9" height="140" fill="white" opacity=".65"/>
+          <rect x="186" y="0" width="9" height="140" fill="white" opacity=".65"/>
+          <!-- Blocks -->
+          <rect x="4" y="4" width="48" height="42" rx="4" fill="#DDD8D1"/>
+          <rect x="73" y="4" width="43" height="42" rx="4" fill="#DDD8D1"/>
+          <rect x="137" y="4" width="43" height="42" rx="4" fill="#DDD8D1"/>
+          <rect x="4" y="67" width="48" height="25" rx="4" fill="#DDD8D1"/>
+          <rect x="73" y="67" width="43" height="25" rx="4" fill="#DDD8D1"/>
+          <rect x="137" y="67" width="43" height="25" rx="4" fill="#DDD8D1"/>
+          <rect x="4" y="113" width="48" height="23" rx="4" fill="#DDD8D1"/>
+          <rect x="73" y="113" width="43" height="23" rx="4" fill="#DDD8D1"/>
+          <rect x="137" y="113" width="43" height="23" rx="4" fill="#DDD8D1"/>
+          <rect x="197" y="4" width="19" height="42" rx="3" fill="#DDD8D1"/>
+          <rect x="197" y="67" width="19" height="25" rx="3" fill="#DDD8D1"/>
+          <rect x="197" y="113" width="19" height="23" rx="3" fill="#DDD8D1"/>
+          <!-- PIN: 公司 coral -->
+          <circle cx="94" cy="25" r="11" fill="#D94F2B" opacity=".92"/>
+          <text x="94" y="29" text-anchor="middle" fill="white" font-family="sans-serif" font-size="9">🏢</text>
+          <rect x="104" y="15" width="38" height="12" rx="6" fill="white" opacity=".9"/>
+          <text x="123" y="23" text-anchor="middle" fill="#D94F2B" font-family="sans-serif" font-size="7" font-weight="600">压力↑ 焦虑</text>
+          <!-- PIN: 健身房 teal -->
+          <circle cx="158" cy="25" r="11" fill="#1A7A6A" opacity=".9"/>
+          <text x="158" y="29" text-anchor="middle" fill="white" font-family="sans-serif" font-size="9">🏋️</text>
+          <rect x="168" y="15" width="32" height="12" rx="6" fill="white" opacity=".9"/>
+          <text x="184" y="23" text-anchor="middle" fill="#1A7A6A" font-family="sans-serif" font-size="7" font-weight="600">放松↑</text>
+          <!-- PIN: 宿舍 plum -->
+          <circle cx="28" cy="79" r="11" fill="#6C5F9E" opacity=".9"/>
+          <text x="28" y="83" text-anchor="middle" fill="white" font-family="sans-serif" font-size="9">🏠</text>
+          <rect x="38" y="69" width="30" height="12" rx="6" fill="white" opacity=".9"/>
+          <text x="53" y="77" text-anchor="middle" fill="#6C5F9E" font-family="sans-serif" font-size="7" font-weight="600">平静</text>
+          <!-- PIN: 教室 amber -->
+          <circle cx="94" cy="120" r="11" fill="#C07A1A" opacity=".9"/>
+          <text x="94" y="124" text-anchor="middle" fill="white" font-family="sans-serif" font-size="9">📚</text>
+          <rect x="104" y="111" width="38" height="12" rx="6" fill="white" opacity=".9"/>
+          <text x="123" y="119" text-anchor="middle" fill="#C07A1A" font-family="sans-serif" font-size="7" font-weight="600">专注 紧张↑</text>
+          <!-- Current pulse -->
+          <circle cx="158" cy="79" r="18" fill="#D94F2B" opacity=".1"/>
+          <circle cx="158" cy="79" r="11" fill="#D94F2B" opacity=".2"/>
+          <circle cx="158" cy="79" r="6" fill="#D94F2B"/>
+          <text x="158" y="97" text-anchor="middle" fill="#D94F2B" font-family="sans-serif" font-size="7" font-weight="600">📍 当前</text>
+        </svg>
+      </div>
+    </div>
+
+  </div><!-- /signal-grid -->
+
+  <!-- Emoji Slider Demo -->
+  <div style="font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;font-family:'Microsoft YaHei',sans-serif">交互概念 · 最小化确认的表达力对比</div>
+  <div class="input-compare" style="margin-bottom:16px">
+    <div class="input-option bad">
+      <div class="input-opt-lbl">方案 A · 现状</div>
+      <h5>单一标签选择</h5>
+      <p>固定词汇，语义重叠，认知负担高。</p>
+      <div style="margin-top:8px">
+        <span class="mock-tag">😟 焦虑</span>
+        <span class="mock-tag">😐 平静</span>
+        <span class="mock-tag">😊 开心</span>
+      </div>
+    </div>
+    <div class="input-option ok">
+      <div class="input-opt-lbl">方案 B · 改进</div>
+      <h5>强度滑块 + 情境标记</h5>
+      <p>连续强度 + 场景快捷标记，低成本有上下文。</p>
+      <div class="mini-slider"><div class="mini-thumb"></div></div>
+      <div>
+        <span class="mock-tag">💼 工作</span>
+        <span class="mock-tag">🏃 运动</span>
+        <span class="mock-tag">😴 睡前</span>
+      </div>
+    </div>
+    <div class="input-option good">
+      <div class="input-opt-lbl">方案 C · 推荐</div>
+      <h5>渐进披露 + 推断说明</h5>
+      <p>基础层3秒确认 + 展示触发依据 + 按需细粒度标签。</p>
+      <div style="margin-top:8px;font-size:10px;color:var(--teal);background:var(--teal-light);padding:6px 8px;border-radius:6px;line-height:1.6;font-family:'Microsoft YaHei',sans-serif">
+        基于 HRV +28% · 过去40分钟<br>→ 按需展开 30+ 细粒度标签
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Slider Demo -->
+  <div class="slider-demo">
+    <div class="slider-demo-label">可交互原型 · 手表端情绪强度滑块</div>
+    <div class="watch-prompt">
+      <div class="watch-prompt-icon">💓</div>
+      <div>
+        <div class="watch-prompt-text">检测到心率异常波动，你现在感觉如何？</div>
+        <div class="watch-prompt-sub">基于 HRV +28% · 过去 40 分钟 · 09:15–09:55</div>
+      </div>
+    </div>
+    <input type="range" min="1" max="5" value="3" class="mood-slider-input" id="moodSlider" oninput="updateMood(this.value)">
+    <div class="emoji-row" id="emojiRow">
+      <div class="emoji-item" data-val="1" onclick="setMood(1)"><div class="emoji-face">😔</div><div class="emoji-word">很低落</div></div>
+      <div class="emoji-item" data-val="2" onclick="setMood(2)"><div class="emoji-face">😟</div><div class="emoji-word">有点差</div></div>
+      <div class="emoji-item active" data-val="3" onclick="setMood(3)"><div class="emoji-face">😐</div><div class="emoji-word">一般般</div></div>
+      <div class="emoji-item" data-val="4" onclick="setMood(4)"><div class="emoji-face">🙂</div><div class="emoji-word">还不错</div></div>
+      <div class="emoji-item" data-val="5" onclick="setMood(5)"><div class="emoji-face">😊</div><div class="emoji-word">很好</div></div>
+    </div>
+    <div class="mood-result" id="moodResult">当前情绪强度：<span>一般般</span> · 拖动滑块或点击表情选择</div>
+  </div>
+
+  <!-- Closed Loop Diagram -->
+  <div style="font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;margin-top:8px;font-family:'Microsoft YaHei',sans-serif">三源触发情绪记录闭环</div>
+  <div class="loop-diagram-wrap">
+    <div class="loop-top-label">Three-Signal Closed Loop · 生理 × 主观 × 情境 三源融合</div>
+    <div class="loop-triggers">
+      <div class="trigger-card tc1">
+        <span class="trigger-icon">💓</span>
+        <h4>生理自动触发</h4>
+        <p>HRV 异常波动时，自动发起最小化确认，附带可视化生理数据说明</p>
+      </div>
+      <div class="trigger-card tc2">
+        <span class="trigger-icon">✏️</span>
+        <h4>用户主观反馈</h4>
+        <p>渐进披露标签（基础3类→细粒度30+）+ 强度滑块，主动校正推断偏差</p>
+      </div>
+      <div class="trigger-card tc3">
+        <span class="trigger-icon">🗺️</span>
+        <h4>场景识别标注</h4>
+        <p>位置/日历/活动行为自动关联情绪情境，提升数据可解释性</p>
+      </div>
+    </div>
+    <div class="loop-arrows">
+      <div class="arrow-down">生理信号</div>
+      <div class="arrow-down">主观修正</div>
+      <div class="arrow-down">情境关联</div>
+    </div>
+    <div class="loop-center">
+      <h3>情绪记录闭环引擎</h3>
+      <p>三源数据融合 · 持续学习 · 个性化校准</p>
+    </div>
+    <div style="text-align:center;color:var(--ink3);font-size:11px;margin-bottom:10px;font-family:'Microsoft YaHei',sans-serif">↓ 输出</div>
+    <div class="loop-outputs">
+      <div class="output-card">
+        <h5>🎯 识别准确率提升</h5>
+        <p>多信号交叉验证减少单一 HRV 误判，推断置信度可量化可解释</p>
+      </div>
+      <div class="output-card">
+        <h5>🧠 个性化情绪预测</h5>
+        <p>建立个体情绪基线，预测波动规律，反馈有意义的趋势洞察</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 08 ══ -->
+<section id="recommendations">
+  <div class="section-label"><span>08 &nbsp;可执行产品建议</span></div>
+  <h2>具体落地怎么做？</h2>
+  <div class="recs-grid">
+    <div class="rec-card">
+      <div class="rec-num">建议 01 · 标签语义重构</div>
+      <h4>重叠词汇整合为"谱系滑块"</h4>
+      <p>将"焦虑/不安/紧张"等语义重叠词整合为"紧张度谱系"，用连续滑块代替离散标签，引入情绪粒度理论重构标签体系。</p>
+    </div>
+    <div class="rec-card">
+      <div class="rec-num">建议 02 · 情境化快捷输入</div>
+      <h4>场景感知的智能标签推荐</h4>
+      <p>根据当前场景（通勤/工作/运动/睡前）智能推荐最相关的情绪标签，使记录从"主动搜索"变为"快速确认"。</p>
+    </div>
+    <div class="rec-card">
+      <div class="rec-num">建议 03 · 调节闭环设计</div>
+      <h4>记录 → 干预 → 回看的正反馈</h4>
+      <p>识别到持续压力时，自动推荐呼吸训练/正念训练等，并在报告中展示干预效果，让用户感知到"记录是有用的"。</p>
+    </div>
+    <div class="rec-card">
+      <div class="rec-num">建议 04 · A/B 测试验证</div>
+      <h4>明确可测量的验证指标</h4>
+      <p>以 2 周为一个观测周期，控制变量分组测试，评估以下四项关键指标的实际改善效果：</p>
+      <div class="ab-metrics">
+        <div class="ab-metric"><div class="ab-metric-n">完成率</div><div class="ab-metric-l">记录任务完成率</div></div>
+        <div class="ab-metric"><div class="ab-metric-n">时长</div><div class="ab-metric-l">标签选择平均用时</div></div>
+        <div class="ab-metric"><div class="ab-metric-n">信任度</div><div class="ab-metric-l">推断用户信任评分</div></div>
+        <div class="ab-metric"><div class="ab-metric-n">7日留存</div><div class="ab-metric-l">功能7天使用率</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 09 ══ -->
+<section id="roadmap">
+  <div class="section-label"><span>09 &nbsp;局限性与未来研究</span></div>
+  <h2>坦诚谈局限，大胆看未来</h2>
+
+  <div style="font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;font-family:'Microsoft YaHei',sans-serif">研究局限性</div>
+  <div class="limit-grid" style="margin-bottom:28px">
+    <div class="limit-card">
+      <h5>样本规模与代表性</h5>
+      <p>n=5，便利取样，结论用于方向性验证而非统计推断；覆盖人群类型有限，可能遗漏其他典型用户群体。</p>
+    </div>
+    <div class="limit-card">
+      <h5>信息时效性</h5>
+      <p>桌面研究依赖公开信息，可能存在信息滞后；小米/华为等厂商迭代频繁，功能边界可能已有更新。</p>
+    </div>
+    <div class="limit-card">
+      <h5>概念未经验证</h5>
+      <p>优化方案为概念设计，尚未进行用户可用性测试；渐进披露标签的实际认知负担需进一步测量。</p>
+    </div>
+    <div class="limit-card">
+      <h5>技术可行性待验证</h5>
+      <p>三源融合方案依赖传感器精度与算法能力，需与算法团队协同验证技术实现路径。</p>
+    </div>
+  </div>
+
+  <div style="font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;font-family:'Microsoft YaHei',sans-serif">未来研究方向</div>
+
+  <!-- Xiaomi Ecosystem -->
+  <div class="ecosystem-wrap" style="margin-bottom:14px">
+    <div class="ecosystem-label">重点方向 · 小米全生态联动</div>
+    <div class="ecosystem-title">当情绪管理从手腕延伸至整个生活空间</div>
+    <div class="ecosystem-desc">小米生态的独特优势在于全屋互联——当手表检测到持续高压，协调整个生活环境主动介入：台灯切换暖光、小爱播放舒缓音乐、空气净化器低噪运转、智能窗帘缓缓关闭。情绪数据成为整个生态的感知入口，这是手机端 App 和单一 Watch 无法复制的竞争壁垒。</div>
+    <svg viewBox="0 0 540 130" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <!-- Center watch -->
+      <rect x="218" y="40" width="104" height="50" rx="14" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <text x="270" y="60" text-anchor="middle" fill="white" font-family="sans-serif" font-size="16">⌚</text>
+      <text x="270" y="75" text-anchor="middle" fill="white" font-family="sans-serif" font-size="9.5" font-weight="600">小米手表</text>
+      <text x="270" y="87" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="sans-serif" font-size="8">检测高压状态</text>
+      <!-- Lines -->
+      <line x1="218" y1="60" x2="126" y2="30" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 2"/>
+      <line x1="218" y1="68" x2="118" y2="100" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 2"/>
+      <line x1="270" y1="40" x2="270" y2="18" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 2"/>
+      <line x1="322" y1="60" x2="414" y2="30" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 2"/>
+      <line x1="322" y1="68" x2="422" y2="100" stroke="rgba(255,255,255,0.18)" stroke-width="1" stroke-dasharray="3 2"/>
+      <!-- Devices -->
+      <rect x="68" y="12" width="110" height="30" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+      <text x="123" y="24" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">💡</text>
+      <text x="123" y="36" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="sans-serif" font-size="8">台灯切换暖光</text>
+      <rect x="58" y="88" width="110" height="30" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+      <text x="113" y="100" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">🪟</text>
+      <text x="113" y="112" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="sans-serif" font-size="8">窗帘缓缓关闭</text>
+      <rect x="214" y="0" width="112" height="30" rx="8" fill="rgba(217,79,43,0.22)" stroke="rgba(217,79,43,0.45)" stroke-width="0.8"/>
+      <text x="270" y="12" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">🔊</text>
+      <text x="270" y="24" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-family="sans-serif" font-size="8">小爱播放舒缓音乐</text>
+      <rect x="362" y="12" width="110" height="30" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+      <text x="417" y="24" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">🌿</text>
+      <text x="417" y="36" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="sans-serif" font-size="8">净化器低噪运转</text>
+      <rect x="372" y="88" width="110" height="30" rx="8" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+      <text x="427" y="100" text-anchor="middle" fill="white" font-family="sans-serif" font-size="10">🕯️</text>
+      <text x="427" y="112" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-family="sans-serif" font-size="8">香氛营造减压氛围</text>
+      <!-- Bottom note -->
+      <text x="270" y="126" text-anchor="middle" fill="rgba(255,255,255,0.25)" font-family="sans-serif" font-size="8" letter-spacing=".04em">情绪数据成为小米生态的感知入口 · 这是单一 App 无法复制的竞争壁垒</text>
+    </svg>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="border:1px solid var(--border);border-radius:10px;padding:14px;background:white">
+      <div style="font-size:11px;font-weight:600;color:var(--teal);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-family:'Microsoft YaHei',sans-serif">研究拓展</div>
+      <p style="font-size:12px;color:var(--ink2);line-height:1.7;font-family:'Microsoft YaHei',sans-serif">扩大样本至 20–30 人，覆盖更多用户类型；设计 A/B 测试验证不同标签体系效果；长期跟踪研究习惯养成的周期与关键节点。</p>
+    </div>
+    <div style="border:1px solid var(--border);border-radius:10px;padding:14px;background:white">
+      <div style="font-size:11px;font-weight:600;color:var(--plum);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;font-family:'Microsoft YaHei',sans-serif">技术协作</div>
+      <p style="font-size:12px;color:var(--ink2);line-height:1.7;font-family:'Microsoft YaHei',sans-serif">与算法团队协作验证三重信号融合的技术可行性；探索情绪预测模型的个性化校准机制与隐私保护方案。</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-tagline">"情绪清晰化本身就是疗愈。"</div>
+    <div class="footer-name">研究者：<strong>XinYi Zhang</strong> · UX Researcher</div>
+  </div>
+  <div class="footer-bottom">
+    <p>情绪监测应用用户体验研究 · 概念验证项目 · UX Research Portfolio</p>
+    <p style="color:var(--coral);font-weight:500;font-family:'Microsoft YaHei',sans-serif">XinYi Zhang</p>
+  </div>
+</footer>
+
+</div>
+
+<script>
+const moodData={1:{word:'很低落',color:'#6C5F9E'},2:{word:'有点差',color:'#C07A1A'},3:{word:'一般般',color:'#8A8885'},4:{word:'还不错',color:'#1A7A6A'},5:{word:'很好',color:'#1A7A6A'}};
+function updateMood(v){
+  v=parseInt(v);
+  document.querySelectorAll('.emoji-item').forEach(el=>el.classList.toggle('active',parseInt(el.dataset.val)===v));
+  const d=moodData[v];
+  document.getElementById('moodResult').innerHTML=`当前情绪强度：<span style="color:${d.color}">${d.word}</span> · 拖动滑块或点击表情选择`;
+}
+function setMood(v){document.getElementById('moodSlider').value=v;updateMood(v);}
+
+// 滚动动画：使用 Intersection Observer 实现进入视口时淡入上浮
+document.addEventListener('DOMContentLoaded', function() {
+  const observerOptions = {
+    root: null, // 视口
+    rootMargin: '0px',
+    threshold: 0.1 // 元素进入视口10%时触发
+  };
+
+  const observer = new IntersectionObserver(function(entries, observer) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // 只触发一次
+      }
+    });
+  }, observerOptions);
+
+  // 观察所有 section 元素
+  const sections = document.querySelectorAll('section');
+  sections.forEach(function(section) {
+    observer.observe(section);
+  });
+});
+</script>
+</body>
+</html>
